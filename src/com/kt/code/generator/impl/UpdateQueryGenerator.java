@@ -22,11 +22,10 @@ public class UpdateQueryGenerator extends AMybatisCodeGenerator {
 		for(int i=0; i<len;i++) {
 			String mbCol = mybatisColumns.get(i);
 			
-			sb.append(TAB_SPACE).append(mbCol);
-			if(i < len-1) {
-				sb.append(",");
-			}
-			sb.append(LINE_SEP);
+			sb.append(TAB_SPACE);
+			if(i > 0) sb.append(",");
+			else	  sb.append(" ");	
+			sb.append(mbCol).append(LINE_SEP);			
 		}
 		
 		sb.append("WHERE 1=1").append(LINE_SEP);

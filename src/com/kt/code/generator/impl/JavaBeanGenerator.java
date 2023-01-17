@@ -26,8 +26,9 @@ public class JavaBeanGenerator extends ACodeGenerator {
 			sb.append("import com.nexacro.uiadapter.spring.core.data.DataSetRowTypeAccessor;")
 			  .append(LINE_SEP).append(LINE_SEP);
 		}
-		
-		sb.append("@Getter").append(LINE_SEP)
+		sb.append("import lombok.Getter;").append(LINE_SEP)
+		  .append("import lombok.Setter;").append(LINE_SEP).append(LINE_SEP)
+		  .append("@Getter").append(LINE_SEP)
 		  .append("@Setter").append(LINE_SEP)
 		  .append("public class ").append(voName);
 		
