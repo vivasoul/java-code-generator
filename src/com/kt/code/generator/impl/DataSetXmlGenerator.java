@@ -13,7 +13,7 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 		String dsName = codeMeta.getDataSetId();
 		List<String> list = makeList(codeMeta.getColumns());
 		
-		sb.append("<Dataset id=\"").append(dsName).append("\">").append(LINE_SEP)
+		sb.append("<Dataset id=\"").append(dsName).append("\" useclientlayout=\"true\">").append(LINE_SEP)
 		  .append("<ColumnInfo>").append(LINE_SEP);
 		
 		for(String line : list) {
