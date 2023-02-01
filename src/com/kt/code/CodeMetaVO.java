@@ -3,10 +3,11 @@ package com.kt.code;
 import java.util.List;
 
 public class CodeMetaVO {
-	private String dataSetId;		//Id of DataSet(Nexacro)
-	private String domainNm;		//domain of java-classes..
-	private String tableNm;			//table name  on database
-	private List<String> columns;	//column name on database
+	private String dataSetId;			//Id of DataSet(Nexacro)
+	private String domainNm;			//domain of java-classes..
+	private String tableNm;				//table name  on database
+	private List<String> keys;			//primary key names on database
+	private List<String> attributes;	//attribute names on database
 	
 	public String getDataSetId() {
 		return dataSetId;
@@ -26,15 +27,21 @@ public class CodeMetaVO {
 	public void setTableNm(String tableNm) {
 		this.tableNm = tableNm;
 	}
-	public List<String> getColumns() {
-		return columns;
+	public List<String> getKeys() {
+		return keys;
 	}
-	public void setColumns(List<String> columns) {
-		this.columns = columns;
+	public void setKeys(List<String> keys) {
+		this.keys = keys;
+	}
+	public List<String> getAttributes() {
+		return attributes;
+	}
+	public void setAttributes(List<String> attributes) {
+		this.attributes = attributes;
 	}
 	@Override
 	public String toString() {
-		return "CodeMetaVO [dataSetId=" + dataSetId + ", domainNm=" + domainNm + ", tableNm=" + tableNm + ", columns="
-				+ columns + "]";
+		return "CodeMetaVO [dataSetId=" + dataSetId + ", domainNm=" + domainNm + ", tableNm=" + tableNm + ", keys="
+				+ keys + ", attributes=" + attributes + "]";
 	}
 }

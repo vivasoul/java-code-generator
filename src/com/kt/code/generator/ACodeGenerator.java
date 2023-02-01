@@ -36,4 +36,13 @@ public abstract class ACodeGenerator {
 			
 		return sb.toString();
 	}
+	
+	protected List<String> getColumns(CodeMetaVO vo) {
+		List<String> columns = new ArrayList<>();
+ 		
+		columns.addAll(vo.getKeys());
+		columns.addAll(vo.getAttributes());
+		
+		return columns;
+	}
 }

@@ -7,7 +7,8 @@ public class CodeMetaBuilder {
 	private String dataSetId;
 	private String domainNm;
 	private String tableNm;
-	private List<String> columns = new ArrayList<>();
+	private List<String> keys = new ArrayList<>();
+	private List<String> attributes = new ArrayList<>();
 
 	public CodeMetaBuilder setDataSetId(String dataSetId) {
 		this.dataSetId = dataSetId;
@@ -23,15 +24,24 @@ public class CodeMetaBuilder {
 		this.tableNm = tableNm;
 		return this;
 	}
-	public CodeMetaBuilder setColumns(List<String> columns) {
-		this.columns = columns;
+	public CodeMetaBuilder setKeys(List<String> keys) {
+		this.keys = keys;
 		return this;
 	}
 	
-	public CodeMetaBuilder addColumn(String colNm) {
-		this.columns.add(colNm);
+	public CodeMetaBuilder addKey(String keyNm) {
+		this.keys.add(keyNm);
 		return this;
 	}
+	public CodeMetaBuilder setAttributes(List<String> attributes) {
+		this.attributes = attributes;
+		return this;
+	}
+	
+	public CodeMetaBuilder addAttribute(String attrNm) {
+		this.attributes.add(attrNm);
+		return this;
+	}	
 	
 	public CodeMetaVO build() {
 		CodeMetaVO vo = new CodeMetaVO();
@@ -39,7 +49,8 @@ public class CodeMetaBuilder {
 		vo.setDataSetId(dataSetId);
 		vo.setDomainNm(domainNm);
 		vo.setTableNm(tableNm);
-		vo.setColumns(columns);
+		vo.setKeys(keys);
+		vo.setAttributes(attributes);
 		
 		return vo;
 	}

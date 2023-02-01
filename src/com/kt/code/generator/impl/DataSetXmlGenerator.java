@@ -11,7 +11,7 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 	public String generateCode(CodeMetaVO codeMeta) {
 		StringBuilder sb = new StringBuilder();
 		String dsName = codeMeta.getDataSetId();
-		List<String> list = makeList(codeMeta.getColumns());
+		List<String> list = makeList(getColumns(codeMeta));
 		
 		sb.append("<Dataset id=\"").append(dsName).append("\" useclientlayout=\"true\">").append(LINE_SEP)
 		  .append("<ColumnInfo>").append(LINE_SEP);

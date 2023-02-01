@@ -37,7 +37,7 @@ public class MainApp extends JFrame{
 	private final Dimension inputLabelSize = new Dimension(150, 30);
 	private final Dimension inputSize = new Dimension(200, 30);
 	private final Dimension outputLabelSize = new Dimension(170, 30);
-	private final Dimension outputSize = new Dimension(170, 600);	
+	private final Dimension outputSize = new Dimension(170, 650);	
 	
 	private JPanel inputArea;
 	private JPanel outputArea;
@@ -45,8 +45,10 @@ public class MainApp extends JFrame{
 	private JTextField domInput;
 	private JTextField tableInput;
 	private JTextField dataSetInput;
+	private JTextArea keysInput;
 	private JTextArea columnsInput;
 	private JCheckBox rowTypeCheck;
+	private JCheckBox rowCbxCheck;
 	
 	private JTextArea javaBeanOutput;
 	private JTextArea selQueryOutput;
@@ -57,7 +59,7 @@ public class MainApp extends JFrame{
 	public MainApp() {
 	    super("OY♡Code Generator");
 	    setDefaultCloseOperation(EXIT_ON_CLOSE);
-	    setBounds(100, 200, 1000, 600);
+	    setBounds(100, 200, 1000, 650);
 	    Container contentPane = getContentPane();
 	    JPanel ioPanel = new JPanel();
 	    
@@ -75,9 +77,10 @@ public class MainApp extends JFrame{
 	    buttonStart.addActionListener(new ActionListener() {
 	          public void actionPerformed(ActionEvent e) {
 	        	  boolean useRowType = rowTypeCheck.isSelected();
+	        	  boolean useRowCbx = rowCbxCheck.isSelected();
 	        	  CodeMetaVO codeMeta = getCodeMeata();
 	        	  //System.out.println(codeMeta);
-	        	  generate(codeMeta, useRowType);
+	        	  generate(codeMeta, useRowType, useRowCbx);
 	          }
 	    });	    
 	    
@@ -87,9 +90,9 @@ public class MainApp extends JFrame{
 	    setVisible(true);	
 	}
 	
-	public void generate(CodeMetaVO codeMeta, boolean useRowType) {
-		ACodeGenerator javaBeanGen = new JavaBeanGenerator(useRowType);
-		ACodeGenerator selectGen = new SelectQueryGenerator();
+	public void generate(CodeMetaVO codeMeta, boolean useRowType, boolean useRowCbx) {
+		ACodeGenerator javaBeanGen = new JavaBeanGenerator(useRowType, useRowCbx);
+		ACodeGenerator selectGen = new SelectQueryGenerator(useRowType);
 		ACodeGenerator insertGen = new InsertQueryGenerator();
 		ACodeGenerator updateGen = new UpdateQueryGenerator();
 		ACodeGenerator dataSetGen = new DataSetXmlGenerator();
@@ -145,17 +148,31 @@ public class MainApp extends JFrame{
 		    
 			dataSetPanel.add(dataSetLb);
 			dataSetPanel.add(dataSetInput);
-		
+
+			JPanel keysPanel = new JPanel();
+	    	
+		    	JLabel keysLb = new JLabel("List of Keys: ");
+		    	keysLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		    	keysLb.setPreferredSize(inputLabelSize);
+		    	keysInput = new JTextArea(5, 10);
+			    
+		    	JScrollPane keysScroll = new JScrollPane (keysInput, 
+			    		   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	    
+		    	keysScroll.setPreferredSize(new Dimension(200, 100));			    
+		    
+		    keysPanel.add(keysLb);
+		    keysPanel.add(keysScroll);			
+			
 			JPanel columnsPanel = new JPanel();
 	    	
-		    	JLabel columnsLb = new JLabel("List of Columns: ");
+		    	JLabel columnsLb = new JLabel("List of Attributes: ");
 		    	columnsLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		    	columnsLb.setPreferredSize(inputLabelSize);
 		    	columnsInput = new JTextArea(5, 10);
 			    
 		    	JScrollPane columnsScroll = new JScrollPane (columnsInput, 
 			    		   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);	    
-		    	columnsScroll.setPreferredSize(new Dimension(200, 400));			    
+		    	columnsScroll.setPreferredSize(new Dimension(200, 300));			    
 		    
 			columnsPanel.add(columnsLb);
 			columnsPanel.add(columnsScroll);			
@@ -166,16 +183,31 @@ public class MainApp extends JFrame{
 		    	rowTypeLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		    	rowTypeLb.setPreferredSize(inputLabelSize);
 		    	rowTypeCheck = new JCheckBox();
+		    	rowTypeCheck.setSelected(true);
 		    	//rowTypeCheck.setPreferredSize(inputSize);		    
 		    
 		    rowTypePanel.add(rowTypeLb);
-		    rowTypePanel.add(rowTypeCheck);			
+		    rowTypePanel.add(rowTypeCheck);		
+		    
+			JPanel rowCheckBoxPanel = new JPanel();
+	    	
+		    	JLabel rowCbxLb = new JLabel("Use row-checkbox: ");
+		    	rowCbxLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		    	rowCbxLb.setPreferredSize(inputLabelSize);
+		    	rowCbxCheck = new JCheckBox();
+		    	rowCbxCheck.setSelected(true);
+		    	//rowTypeCheck.setPreferredSize(inputSize);		    
+		    
+		    rowCheckBoxPanel.add(rowCbxLb);
+		    rowCheckBoxPanel.add(rowCbxCheck);			    
 	    
 	    inputArea.add(domPanel);
 	    inputArea.add(tablePanel);
 	    inputArea.add(dataSetPanel);
+	    inputArea.add(keysPanel);
 	    inputArea.add(columnsPanel);
 	    inputArea.add(rowTypePanel);
+	    inputArea.add(rowCheckBoxPanel);
 	}
 	
 	private void initOutputArea() {
@@ -269,21 +301,26 @@ public class MainApp extends JFrame{
 		String domainNm = domInput.getText() != null ? domInput.getText().trim() : "";
 		String tableNm = tableInput.getText() != null ? tableInput.getText().trim() : "";
 		String dataSetId = dataSetInput.getText() != null ? dataSetInput.getText().trim() : "";
-		List<String> columns = getColumns();
+		List<String> keys = getKeys();
+		List<String> attributes = getAttributess();
 
 		cmb.setDomainNm(domainNm)
 		   .setTableNm(tableNm)
 		   .setDataSetId(dataSetId);
 		
-		if(columns != null) {   
-		   cmb.setColumns(columns);
+		if(keys != null) {   
+			cmb.setKeys(keys);
+		}
+		
+		if(attributes != null) {
+			cmb.setAttributes(attributes);
 		}
 		
 		return cmb.build();
 	}	
 	
-	private List<String> getColumns() {
-		String columnsStr = columnsInput.getText();
+	private List<String> getKeys() {
+		String columnsStr = keysInput.getText();
 		
 		if(columnsStr != null && !columnsStr.isEmpty()) {
 			String[] arr = columnsStr.split("\\s+");
@@ -292,6 +329,17 @@ public class MainApp extends JFrame{
 			return null; 
 		}
 	}
+	
+	private List<String> getAttributess() {
+		String columnsStr = columnsInput.getText();
+		
+		if(columnsStr != null && !columnsStr.isEmpty()) {
+			String[] arr = columnsStr.split("\\s+");
+			return Arrays.asList(arr);
+		} else {
+			return null; 
+		}
+	}	
 	
 	public static void main(String[] args) {
 	//	test();
@@ -327,7 +375,7 @@ public class MainApp extends JFrame{
 		
 		cmb.setDomainNm("Test")
 		   .setTableNm("TB_TEST")
-		   .setColumns(columns);
+		   .setAttributes(columns);
 		
 		return cmb.build();
 	}
