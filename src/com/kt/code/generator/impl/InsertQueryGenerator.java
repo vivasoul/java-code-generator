@@ -8,6 +8,8 @@ import com.kt.code.generator.AMybatisCodeGenerator;
 
 public class InsertQueryGenerator extends AMybatisCodeGenerator {
 	private final List<String> excludeList = Arrays.asList(new String[]{"REG_DTIME", "MODI_DTIME"});
+	private final String REG_USER_ID = "REG_USER_ID";
+	private final String MODI_USER_ID = "MODI_USER_ID";
 	
 	@Override
 	public String generateCode(CodeMetaVO codeMeta) {
@@ -56,7 +58,7 @@ public class InsertQueryGenerator extends AMybatisCodeGenerator {
 	@Override
 	protected String makeLine(String colNm) {
 		
-		return getMybatisBinder(colNm);
+		return getMybatisBinder(colNm.equals(MODI_USER_ID) ? REG_USER_ID : colNm);
 	}
 
 }
