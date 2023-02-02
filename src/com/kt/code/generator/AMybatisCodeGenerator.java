@@ -41,7 +41,7 @@ public abstract class AMybatisCodeGenerator extends ACodeGenerator{
 		sb.append("<where>").append(LINE_SEP);
 		for(String col : columns) {
 			String cc = convert2CamelCase(col);
-			sb.append("\t<if test=\"").append(cc).append(" != null && ").append(cc).append(" != '' \">").append(LINE_SEP)
+			sb.append("\t<if test=\"").append(cc).append(" != null and ").append(cc).append(" != '' \">").append(LINE_SEP)
 			  .append("\tAND ").append(col).append(" = #{").append(cc).append("}").append(LINE_SEP)
 			  .append("\t</if>").append(LINE_SEP);
 		}

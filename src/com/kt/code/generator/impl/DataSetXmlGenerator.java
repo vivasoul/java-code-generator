@@ -14,7 +14,7 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 		List<String> colums = getColumns(codeMeta);
 		List<String> list = makeList(colums);
 		
-		sb.append("<Dataset id=\"").append(dsName).append(LINE_SEP)
+		sb.append("<Dataset id=\"").append(dsName).append("\">").append(LINE_SEP)
 		  .append("<ColumnInfo>").append(LINE_SEP);
 		
 		for(String line : list) {
