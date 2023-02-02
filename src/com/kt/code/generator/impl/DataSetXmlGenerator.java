@@ -11,7 +11,8 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 	public String generateCode(CodeMetaVO codeMeta) {
 		StringBuilder sb = new StringBuilder();
 		String dsName = codeMeta.getDataSetId();
-		List<String> list = makeList(getColumns(codeMeta));
+		List<String> colums = getColumns(codeMeta);
+		List<String> list = makeList(colums);
 		
 		sb.append("<Dataset id=\"").append(dsName).append(LINE_SEP)
 		  .append("<ColumnInfo>").append(LINE_SEP);
@@ -19,8 +20,16 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 		for(String line : list) {
 			sb.append(TAB_SPACE).append(line).append(LINE_SEP);
 		}
-		sb.append("</ColumnInfo>").append(LINE_SEP)
-		  .append("</Dataset>");
+		sb.append("</ColumnInfo>").append(LINE_SEP);
+		
+		sb.append("<Rows>").append(LINE_SEP);
+		sb.append("<Row>").append(LINE_SEP);
+		for(String colNm : colums) {
+			sb.append(TAB_SPACE).append(makeRowLine(colNm)).append(LINE_SEP);
+		}
+		sb.append("</Row>").append(LINE_SEP);
+		sb.append("</Rows>").append(LINE_SEP);
+		sb.append("</Dataset>");
 		
 		return sb.toString();
 	}
@@ -35,4 +44,13 @@ public class DataSetXmlGenerator extends ACodeGenerator {
 		return sb.toString();
 	}
 
+	private String makeRowLine(String colNm) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<Col id=\"")
+		  .append(convert2CamelCase(colNm))
+		  .append("\" />");
+		
+		return sb.toString();
+	}
 }
+
